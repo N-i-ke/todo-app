@@ -12,7 +12,43 @@ const FILTERS: { label: string; value: TodoFilter }[] = [
 
 export default function Home() {
   const [filter, setFilter] = useState<TodoFilter>('all');
-  const { data: todos, isLoading, isError, error } = useTodos();
+  const todosQuery = useTodos();
+
+  if (todosQuery.isPending) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50">
+        <p className="text-gray-500">読み込み中...</p>
+      </main>
+    );
+  }
+
+  if (todosQuery.isError) {
+    const message =
+      todosQuery.error instanceof Error ? todosQuery.error.message : '不明なエラー';
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="w-full max-w-md rounded-lg border border-red-200 bg-white p-6 shadow-sm">
+          <h1 className="mb-3 text-xl font-bold text-red-700">
+            バックエンドに接続できません
+          </h1>
+          <p className="mb-2 text-sm text-gray-700">
+            API サーバーが起動しているか確認してください。
+          </p>
+          <pre className="mb-4 overflow-x-auto rounded bg-gray-100 px-3 py-2 text-xs text-gray-700">
+            {message}
+          </pre>
+          <button
+            type="button"
+            onClick={() => todosQuery.refetch()}
+            disabled={todosQuery.isFetching}
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+          >
+            {todosQuery.isFetching ? '再接続中...' : '再試行'}
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 py-10">
@@ -40,13 +76,7 @@ export default function Home() {
           ))}
         </div>
 
-        {isLoading && <p className="text-gray-500">読み込み中...</p>}
-        {isError && (
-          <p className="rounded bg-red-50 p-3 text-red-700">
-            読み込みに失敗しました: {error instanceof Error ? error.message : '不明なエラー'}
-          </p>
-        )}
-        {todos && <TodoList todos={todos} filter={filter} />}
+        <TodoList todos={todosQuery.data} filter={filter} />
       </div>
     </main>
   );
