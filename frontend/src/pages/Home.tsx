@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import TodoForm from '../components/TodoForm';
 import TodoList from '../components/TodoList';
+import { useAuth } from '../contexts/AuthContext';
 import { useTodos } from '../hooks/useTodos';
 import type { TodoFilter } from '../types/todo';
 
@@ -13,6 +14,17 @@ const FILTERS: { label: string; value: TodoFilter }[] = [
 export default function Home() {
   const [filter, setFilter] = useState<TodoFilter>('all');
   const todosQuery = useTodos();
+  const { user, logout } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await logout();
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   if (todosQuery.isPending) {
     return (
@@ -53,7 +65,20 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 py-10">
       <div className="mx-auto w-full max-w-2xl px-4">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900">ToDo</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-gray-900">ToDo</h1>
+          <div className="flex items-center gap-3 text-sm">
+            <span className="text-gray-600">{user?.email}</span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="rounded bg-gray-200 px-3 py-1 text-gray-700 hover:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100"
+            >
+              {loggingOut ? 'ログアウト中...' : 'ログアウト'}
+            </button>
+          </div>
+        </div>
 
         <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
           <TodoForm />
