@@ -1,3 +1,5 @@
+// Load .env before any module reads process.env (e.g. JwtModule's factory).
+import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import cookieParser from 'cookie-parser';

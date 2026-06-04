@@ -12,6 +12,12 @@ import { AuthUser } from './decorators/current-user.decorator';
 
 const BCRYPT_ROUNDS = 12;
 
+// Real bcrypt hash of a random throw-away string. Used to keep response time
+// uniform when the requested email does not exist, so that an attacker cannot
+// distinguish "no such user" from "wrong password" via timing.
+const DUMMY_PASSWORD_HASH =
+  '$2b$12$8FDbcBTym02nVvgwZFeNYui/6GEbf8npTieXIGrF9C2SUYoVr57m.';
+
 export type AuthResult = {
   user: AuthUser;
   accessToken: string;
@@ -43,8 +49,7 @@ export class AuthService {
   async login(email: string, password: string): Promise<AuthResult> {
     const normalized = email.trim().toLowerCase();
     const user = await this.users.findByEmail(normalized);
-    // Hash a dummy when user is missing to keep response time uniform.
-    const passwordHash = user?.passwordHash ?? '$2a$12$invalidinvalidinvalidinvalididuMjbXl4S9rJ8Gk6uHcz1eA0gK7K';
+    const passwordHash = user?.passwordHash ?? DUMMY_PASSWORD_HASH;
     const ok = await bcrypt.compare(password, passwordHash);
     if (!user || !ok) {
       this.logger.warn(`login failed email=${normalized}`);

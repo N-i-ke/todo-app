@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Post,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
@@ -16,7 +15,6 @@ import { AuthUser, CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { CsrfGuard } from './guards/csrf.guard';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -64,7 +62,6 @@ export class AuthController {
     return { user: result.user };
   }
 
-  @UseGuards(CsrfGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   logout(@Res({ passthrough: true }) res: Response): void {
