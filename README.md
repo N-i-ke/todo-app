@@ -58,6 +58,54 @@ npm run dev
 
 UI は `http://localhost:5173` で起動する。
 
+## 起動方法
+
+初回セットアップ後、開発時は以下のコマンドで起動する。
+バックエンドとフロントエンドはそれぞれ別ターミナルで実行すること。
+
+### バックエンド (NestJS API)
+
+```sh
+cd backend
+npm run start:dev
+```
+
+- 起動 URL: `http://localhost:3000`
+- ファイル変更を監視して自動再起動する (watch モード)
+- 事前に PostgreSQL が起動していること (`brew services start postgresql@16`)
+- スキーマを変更した場合は `npx prisma migrate dev` を実行する
+
+その他のコマンド:
+
+| コマンド             | 用途                       |
+| -------------------- | -------------------------- |
+| `npm run start`      | 通常起動 (watch なし)      |
+| `npm run build`      | 本番ビルド                 |
+| `npm run start:prod` | ビルド済みファイルから起動 |
+
+### フロントエンド (React + Vite)
+
+```sh
+cd frontend
+npm run dev
+```
+
+- 起動 URL: `http://localhost:5173`
+- HMR (ホットモジュールリロード) で変更が即時反映される
+- API のエンドポイントを変更した場合は `frontend/.env` を確認する
+
+その他のコマンド:
+
+| コマンド            | 用途                       |
+| ------------------- | -------------------------- |
+| `npm run build`     | 本番ビルド (型チェック込み) |
+| `npm run preview`   | ビルド成果物のプレビュー   |
+| `npm run typecheck` | 型チェックのみ実行         |
+
+### 停止方法
+
+各ターミナルで `Ctrl + C` を押す。
+
 ## API
 
 | Method | Path           | 説明                     |
