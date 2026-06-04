@@ -1,6 +1,5 @@
-// Load .env before any module reads process.env (e.g. JwtModule's factory).
-import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -8,17 +7,6 @@ import { AppModule } from './app.module';
 import { CsrfGuard } from './auth/guards/csrf.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
-
-function requireEnv(name: string, minLength = 0): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} must be set`);
-  }
-  if (minLength > 0 && value.length < minLength) {
-    throw new Error(`${name} must be at least ${minLength} characters`);
-  }
-  return value;
-}
 
 function parseOrigins(value: string | undefined): string[] {
   if (!value) return [];
@@ -29,14 +17,13 @@ function parseOrigins(value: string | undefined): string[] {
 }
 
 async function bootstrap() {
-  requireEnv('JWT_SECRET', 32);
-
   const app = await NestFactory.create(AppModule);
+  const config = app.get(ConfigService);
 
   app.use(helmet());
   app.use(cookieParser());
 
-  const origins = parseOrigins(process.env.CORS_ORIGINS) || ['http://localhost:5173'];
+  const origins = parseOrigins(config.get<string>('CORS_ORIGINS'));
   app.enableCors({
     origin: origins.length > 0 ? origins : ['http://localhost:5173'],
     credentials: true,
@@ -57,7 +44,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.enableShutdownHooks();
 
-  const port = Number(process.env.PORT) || 3000;
+  const port = config.get<number>('PORT') ?? 3000;
   await app.listen(port);
 }
 

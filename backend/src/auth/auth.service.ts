@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -12,12 +13,6 @@ import { AuthUser } from './decorators/current-user.decorator';
 
 const BCRYPT_ROUNDS = 12;
 
-// Real bcrypt hash of a random throw-away string. Used to keep response time
-// uniform when the requested email does not exist, so that an attacker cannot
-// distinguish "no such user" from "wrong password" via timing.
-const DUMMY_PASSWORD_HASH =
-  '$2b$12$8FDbcBTym02nVvgwZFeNYui/6GEbf8npTieXIGrF9C2SUYoVr57m.';
-
 export type AuthResult = {
   user: AuthUser;
   accessToken: string;
@@ -25,13 +20,23 @@ export type AuthResult = {
 };
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   private readonly logger = new Logger(AuthService.name);
+  // Real bcrypt hash of a per-process random secret. Used when the requested
+  // email does not exist so bcrypt.compare runs the same KDF and the response
+  // time does not leak whether the user is registered. Computed at boot so we
+  // never ship a known dummy hash in source.
+  private dummyPasswordHash = '';
 
   constructor(
     private readonly users: UsersService,
     private readonly jwt: JwtService,
   ) {}
+
+  async onModuleInit(): Promise<void> {
+    const seed = randomBytes(32).toString('hex');
+    this.dummyPasswordHash = await bcrypt.hash(seed, BCRYPT_ROUNDS);
+  }
 
   async register(email: string, password: string): Promise<AuthResult> {
     const normalized = email.trim().toLowerCase();
@@ -49,7 +54,7 @@ export class AuthService {
   async login(email: string, password: string): Promise<AuthResult> {
     const normalized = email.trim().toLowerCase();
     const user = await this.users.findByEmail(normalized);
-    const passwordHash = user?.passwordHash ?? DUMMY_PASSWORD_HASH;
+    const passwordHash = user?.passwordHash ?? this.dummyPasswordHash;
     const ok = await bcrypt.compare(password, passwordHash);
     if (!user || !ok) {
       this.logger.warn(`login failed email=${normalized}`);
