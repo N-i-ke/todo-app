@@ -11,6 +11,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { Todo } from '@prisma/client';
+import { AuthUser, CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { TodoService } from './todo.service';
@@ -20,26 +21,33 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
-  findAll(): Promise<Todo[]> {
-    return this.todoService.findAll();
+  findAll(@CurrentUser() user: AuthUser): Promise<Todo[]> {
+    return this.todoService.findAll(user.id);
   }
 
   @Post()
-  create(@Body() dto: CreateTodoDto): Promise<Todo> {
-    return this.todoService.create(dto);
+  create(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreateTodoDto,
+  ): Promise<Todo> {
+    return this.todoService.create(user.id, dto);
   }
 
   @Patch(':id')
   update(
+    @CurrentUser() user: AuthUser,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTodoDto,
   ): Promise<Todo> {
-    return this.todoService.update(id, dto);
+    return this.todoService.update(user.id, id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    await this.todoService.remove(id);
+  async remove(
+    @CurrentUser() user: AuthUser,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    await this.todoService.remove(user.id, id);
   }
 }
