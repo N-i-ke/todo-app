@@ -1,5 +1,8 @@
 # ToDo App
 
+[![CI](https://github.com/N-i-ke/todo-app/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/N-i-ke/todo-app/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/N-i-ke/todo-app/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/N-i-ke/todo-app/actions/workflows/codeql.yml)
+
 React + NestJS + PostgreSQL の学習用 ToDo アプリ。
 
 ## 構成
