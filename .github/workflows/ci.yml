@@ -86,8 +86,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test --if-present
+      - name: Unit tests
+        run: npm test
+
+      - name: E2E tests
+        run: npm run test:e2e
 
   frontend:
     name: Frontend / build
@@ -129,4 +132,4 @@ jobs:
         run: npm run build
 
       - name: Test
-        run: npm test --if-present
+        run: npm test

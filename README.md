@@ -93,6 +93,10 @@ npm run start:dev
 | `npm run lint:fix`   | ESLint で自動修正可能なものを修正 |
 | `npm run format`     | Prettier で全ファイルを整形   |
 | `npm run format:check` | Prettier の整形差分を確認 (CI と同じ) |
+| `npm test`           | Jest unit tests               |
+| `npm run test:watch` | Jest watch モード             |
+| `npm run test:cov`   | Jest + カバレッジ             |
+| `npm run test:e2e`   | Supertest + 実 PostgreSQL の E2E |
 
 ### フロントエンド (React + Vite)
 
@@ -116,10 +120,32 @@ npm run dev
 | `npm run lint:fix` | ESLint で自動修正可能なものを修正 |
 | `npm run format`   | Prettier で全ファイルを整形       |
 | `npm run format:check` | Prettier の整形差分を確認 (CI と同じ) |
+| `npm test`         | Vitest run                        |
+| `npm run test:watch` | Vitest watch モード             |
+| `npm run test:cov` | Vitest + カバレッジ               |
 
 ### 停止方法
 
 各ターミナルで `Ctrl + C` を押す。
+
+## テスト
+
+### Backend (Jest + Supertest)
+
+- 単体テスト: `src/**/*.spec.ts` で Prisma を mock、サービスのロジックを検証
+- E2E テスト: `test/*.e2e-spec.ts` で実 PostgreSQL に対して HTTP レベルで検証
+  - 認証フロー (register / login / logout / me)
+  - CSRF 強制 / SameSite=Strict cookie
+  - ユーザー間データ分離 (Bob は Alice の Todo にアクセス不可)
+  - ログインのタイミング攻撃耐性 (existing user vs ghost user)
+
+E2E は実 DB を要するため、起動前に PostgreSQL が利用可能か `pg_isready -h localhost -p 5432` で確認。
+
+### Frontend (Vitest + Testing Library + MSW)
+
+- コンポーネントテスト: `src/components/**/*.test.tsx`
+- HTTP クライアントテスト: `src/services/http.test.ts` (CSRF header の注入、401 ハンドラ等)
+- MSW で API モック (`src/test/handlers.ts`)
 
 ## コーディング規約 / Lint・Format
 

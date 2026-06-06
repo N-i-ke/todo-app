@@ -7,7 +7,14 @@ import globals from 'globals';
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'node_modules', 'prisma/migrations', 'eslint.config.mjs'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'prisma/migrations',
+      'eslint.config.mjs',
+      'test/jest-e2e.config.js',
+      'jest.config.js',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -23,14 +30,14 @@ export default tseslint.config(
         ...globals.node,
       },
       parserOptions: {
-        project: ['./tsconfig.json'],
+        project: ['./tsconfig.eslint.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },
     settings: {
       'import/resolver': {
         typescript: {
-          project: './tsconfig.json',
+          project: './tsconfig.eslint.json',
         },
       },
     },
@@ -65,6 +72,22 @@ export default tseslint.config(
       'import/no-unresolved': 'off',
       'import/named': 'off',
       'import/namespace': 'off',
+    },
+  },
+  {
+    // Tests routinely poke at typed-as-any helpers (supertest's `App` type
+    // does not align with Node http.Server) and assert against arbitrary
+    // response bodies, so the `no-unsafe-*` family creates noise without
+    // value here.
+    files: ['test/**/*.ts', 'src/**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
 );
