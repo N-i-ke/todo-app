@@ -1,11 +1,5 @@
 import { plainToInstance, Transform } from 'class-transformer';
-import {
-  IsInt,
-  IsOptional,
-  IsString,
-  MinLength,
-  validateSync,
-} from 'class-validator';
+import { IsInt, IsOptional, IsString, MinLength, validateSync } from 'class-validator';
 
 export class EnvSchema {
   @IsString()
@@ -52,9 +46,7 @@ export function validateEnv(config: Record<string, unknown>): EnvSchema {
   });
   if (errors.length > 0) {
     const messages = errors
-      .flatMap((e) =>
-        Object.values(e.constraints ?? {}).map((m) => `  - ${e.property}: ${m}`),
-      )
+      .flatMap((e) => Object.values(e.constraints ?? {}).map((m) => `  - ${e.property}: ${m}`))
       .join('\n');
     throw new Error(`Invalid environment configuration:\n${messages}`);
   }

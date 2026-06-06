@@ -9,11 +9,11 @@ import {
 import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
 
-type ErrorBody = {
+interface ErrorBody {
   statusCode: number;
   message: string;
   error?: string;
-};
+}
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

@@ -57,6 +57,9 @@ export default function TodoItem({ todo }: Props) {
             if (e.key === 'Enter') saveEdit();
             if (e.key === 'Escape') cancelEdit();
           }}
+          // The input is only rendered when the user explicitly enters
+          // edit mode; focusing it immediately mirrors the intent.
+          // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
           maxLength={200}
           className="flex-1 rounded border border-gray-300 px-2 py-1 focus:border-blue-500 focus:outline-none"

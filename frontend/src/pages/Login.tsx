@@ -4,8 +4,7 @@ import { HttpError } from '../services/http';
 
 type Mode = 'login' | 'register';
 
-const PASSWORD_HINT =
-  '12 文字以上、英大文字・英小文字・数字を含めてください';
+const PASSWORD_HINT = '12 文字以上、英大文字・英小文字・数字を含めてください';
 
 export default function Login() {
   const { login, register } = useAuth();
@@ -45,9 +44,7 @@ export default function Login() {
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-sm">
         <h1 className="mb-1 text-2xl font-bold text-gray-900">ToDo App</h1>
-        <p className="mb-6 text-sm text-gray-500">
-          {mode === 'login' ? 'ログイン' : '新規登録'}
-        </p>
+        <p className="mb-6 text-sm text-gray-500">{mode === 'login' ? 'ログイン' : '新規登録'}</p>
 
         <div className="mb-4 flex gap-2 text-sm">
           <button
@@ -110,9 +107,7 @@ export default function Login() {
           </div>
 
           {error ? (
-            <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
-            </p>
+            <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
           ) : null}
 
           <button
@@ -120,11 +115,7 @@ export default function Login() {
             disabled={submitting}
             className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
-            {submitting
-              ? '送信中...'
-              : mode === 'login'
-                ? 'ログイン'
-                : '登録してログイン'}
+            {submitting ? '送信中...' : mode === 'login' ? 'ログイン' : '登録してログイン'}
           </button>
         </form>
       </div>

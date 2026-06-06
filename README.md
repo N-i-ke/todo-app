@@ -84,11 +84,15 @@ npm run start:dev
 
 その他のコマンド:
 
-| コマンド             | 用途                       |
-| -------------------- | -------------------------- |
-| `npm run start`      | 通常起動 (watch なし)      |
-| `npm run build`      | 本番ビルド                 |
-| `npm run start:prod` | ビルド済みファイルから起動 |
+| コマンド             | 用途                          |
+| -------------------- | ----------------------------- |
+| `npm run start`      | 通常起動 (watch なし)         |
+| `npm run build`      | 本番ビルド                    |
+| `npm run start:prod` | ビルド済みファイルから起動    |
+| `npm run lint`       | ESLint チェック               |
+| `npm run lint:fix`   | ESLint で自動修正可能なものを修正 |
+| `npm run format`     | Prettier で全ファイルを整形   |
+| `npm run format:check` | Prettier の整形差分を確認 (CI と同じ) |
 
 ### フロントエンド (React + Vite)
 
@@ -103,15 +107,36 @@ npm run dev
 
 その他のコマンド:
 
-| コマンド            | 用途                       |
-| ------------------- | -------------------------- |
-| `npm run build`     | 本番ビルド (型チェック込み) |
-| `npm run preview`   | ビルド成果物のプレビュー   |
-| `npm run typecheck` | 型チェックのみ実行         |
+| コマンド            | 用途                              |
+| ------------------- | --------------------------------- |
+| `npm run build`     | 本番ビルド (型チェック込み)       |
+| `npm run preview`   | ビルド成果物のプレビュー          |
+| `npm run typecheck` | 型チェックのみ実行                |
+| `npm run lint`     | ESLint チェック                   |
+| `npm run lint:fix` | ESLint で自動修正可能なものを修正 |
+| `npm run format`   | Prettier で全ファイルを整形       |
+| `npm run format:check` | Prettier の整形差分を確認 (CI と同じ) |
 
 ### 停止方法
 
 各ターミナルで `Ctrl + C` を押す。
+
+## コーディング規約 / Lint・Format
+
+- **Prettier**: ルートの `.prettierrc.json` を全プロジェクトで共有 (singleQuote / semi / trailingComma=all / printWidth=100)
+- **ESLint**: backend / frontend それぞれに flat config (`eslint.config.mjs`) を設置
+  - backend: `@typescript-eslint` typed rules + `import/order` (`no-floating-promises` を error)
+  - frontend: React + react-hooks + react-refresh + jsx-a11y
+  - 共通: `eslint-config-prettier` で Prettier と競合するルールを無効化
+- **EditorConfig**: ルートに `.editorconfig` (LF / utf-8 / 2 space)
+- CI で `npm run format:check` と `npm run lint` が実行され、違反があると失敗する
+
+ローカルで一括整形する場合:
+
+```sh
+cd backend && npm run lint:fix && npm run format
+cd ../frontend && npm run lint:fix && npm run format
+```
 
 ## 認証
 

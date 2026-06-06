@@ -8,16 +8,17 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { randomBytes } from 'node:crypto';
+
 import { UsersService } from '../users/users.service';
 import { AuthUser } from './decorators/current-user.decorator';
 
 const BCRYPT_ROUNDS = 12;
 
-export type AuthResult = {
+export interface AuthResult {
   user: AuthUser;
   accessToken: string;
   csrfToken: string;
-};
+}
 
 @Injectable()
 export class AuthService implements OnModuleInit {

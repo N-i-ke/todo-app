@@ -11,10 +11,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { Todo } from '@prisma/client';
-import { AuthUser, CurrentUser } from '../auth/decorators/current-user.decorator';
+
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { TodoService } from './todo.service';
+import { AuthUser, CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('todos')
 export class TodoController {
@@ -26,10 +27,7 @@ export class TodoController {
   }
 
   @Post()
-  create(
-    @CurrentUser() user: AuthUser,
-    @Body() dto: CreateTodoDto,
-  ): Promise<Todo> {
+  create(@CurrentUser() user: AuthUser, @Body() dto: CreateTodoDto): Promise<Todo> {
     return this.todoService.create(user.id, dto);
   }
 

@@ -3,11 +3,15 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UsersService } from '../users/users.service';
+
 import { ACCESS_TOKEN_COOKIE } from './auth.constants';
+import { UsersService } from '../users/users.service';
 import { AuthUser } from './decorators/current-user.decorator';
 
-type JwtPayload = { sub: number; email: string };
+interface JwtPayload {
+  sub: number;
+  email: string;
+}
 
 const cookieExtractor = (req: Request): string | null => {
   const cookies = req?.cookies as Record<string, string> | undefined;

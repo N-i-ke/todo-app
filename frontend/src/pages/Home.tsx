@@ -35,14 +35,11 @@ export default function Home() {
   }
 
   if (todosQuery.isError) {
-    const message =
-      todosQuery.error instanceof Error ? todosQuery.error.message : '不明なエラー';
+    const message = todosQuery.error instanceof Error ? todosQuery.error.message : '不明なエラー';
     return (
       <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-md rounded-lg border border-red-200 bg-white p-6 shadow-sm">
-          <h1 className="mb-3 text-xl font-bold text-red-700">
-            バックエンドに接続できません
-          </h1>
+          <h1 className="mb-3 text-xl font-bold text-red-700">バックエンドに接続できません</h1>
           <p className="mb-2 text-sm text-gray-700">
             API サーバーが起動しているか確認してください。
           </p>
