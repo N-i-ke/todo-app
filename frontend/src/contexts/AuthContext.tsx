@@ -87,6 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// Hook is co-located with the Provider on purpose — the file is small
+// and keeping them together avoids an extra module for a trivial helper.
+// Cost: Vite HMR cannot fast-refresh this file as cleanly as a pure
+// component file. Full reload still works.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
   if (!ctx) {

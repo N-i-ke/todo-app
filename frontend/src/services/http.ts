@@ -9,9 +9,7 @@ export function setUnauthorizedHandler(handler: UnauthorizedHandler | null): voi
 }
 
 function readCookie(name: string): string | null {
-  const match = document.cookie
-    .split('; ')
-    .find((entry) => entry.startsWith(`${name}=`));
+  const match = document.cookie.split('; ').find((entry) => entry.startsWith(`${name}=`));
   return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
 }
 

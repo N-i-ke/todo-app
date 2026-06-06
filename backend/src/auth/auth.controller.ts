@@ -1,14 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
+
 import { ACCESS_TOKEN_COOKIE, CSRF_COOKIE } from './auth.constants';
 import { AuthService } from './auth.service';
 import { AuthUser, CurrentUser } from './decorators/current-user.decorator';
